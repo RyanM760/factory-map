@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Factory Map</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map { height: 600px; }
+    .custom-tooltip {
+      background: white;
+      border: 1px solid #ccc;
+      padding: 8px;
+      border-radius: 5px;
+      font-size: 14px;
+      max-width: 200px;
+    }
+    .custom-tooltip ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 5px 0 0 0;
+    }
+    .custom-tooltip li { margin: 2px 0; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const factories = [
+      {
+        name: "Hume Supernatural, Inc - US",
+        lat: 37.0902,
+        lng: -95.7129,
+        capabilities: ["Misc.Offerings/Accessories"],
+        color: "red"
+      },
+      {
+        name: "Tibs LLC - CN",
+        lat: 35.8617,
+        lng: 104.1954,
+        capabilities: ["Misc.Offerings/Accessories"],
+        color: "blue"
+      },
+      {
+        name: "IKAR - VN",
+        lat: 14.0583,
+        lng: 108.2772,
+        capabilities: ["Knit Tops (M&W)", "Misc.Offerings/Accessories"],
+        color: "green"
+      },
+      {
+        name: "Giteks",
+        lat: 38.9637,
+        lng: 35.2433,
+        capabilities: [
+          "Knit Tops (M&W)", "Knit Bottoms (M&W)", "Woven Tops (M&W)",
+          "Woven Bottoms (M&W)", "Basic Outerwear", "In House Wash Capabilities",
+          "3rd Party Wash Capabilities"
+        ],
+        color: "purple"
+      },
+      {
+        name: "Giysun",
+        lat: 38.9637,
+        lng: 35.2433,
+        capabilities: [
+          "Knit Tops (M&W)", "Woven Tops (M&W)", "In House Wash Capabilities",
+          "3rd Party Wash Capabilities"
+        ],
+        color: "orange"
+      }
+    ];
+
+    const map = L.map('map').setView([30.0, 20.0], 2);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18
+    }).addTo(map);
+
+    factories.forEach(factory => {
+      const marker = L.circleMarker([factory.lat, factory.lng], {
+        color: factory.color,
+        radius: 8,
+        fillOpacity: 0.8
+      }).addTo(map);
+
+      const tooltipContent = `
+        <div class="custom-tooltip">
+          <strong>${factory.name}</strong>
+          <ul>${factory.capabilities.map(cap => `<li>${cap}</li>`).join('')}</ul>
+        </div>
+      `;
+
+      marker.bindTooltip(tooltipContent, {
+        permanent: false,
+        direction: 'right',
+        offset: [10, 0],
+        opacity: 0.9,
+        className: 'leaflet-tooltip'
+      });
+
+      marker.on('mouseover', () => marker.openTooltip());
+      marker.on('mouseout', () => marker.closeTooltip());
+    });
+  </script>
+</body>
+</html>
